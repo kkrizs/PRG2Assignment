@@ -6,41 +6,51 @@
 //========================================================== 
 
 using System;
+using System.Security.AccessControl;
 
 namespace S10272060J_PRG2Assignment
 {
-
-    public class OrderedFoodItem
+    class OrderedFoodItem : FoodItem
     {
-        public string ItemName { get; set; }
-        public string ItemDesc { get; set; }
-        public double ItemPrice { get; set; }
-        public string Customise { get; set; }
+        private int qtyOrdered;
 
-        public int QtyOrdered { get; set; }
-        public double SubTotal { get; private set; }
+        private double subTotal;
 
-        public OrderedFoodItem(string itemName, string itemDesc, double itemPrice, int qtyOrdered, string customise = "")
+        public int QtyOrdered
         {
-            ItemName = itemName;
-            ItemDesc = itemDesc;
-            ItemPrice = itemPrice;
-            QtyOrdered = qtyOrdered;
-            Customise = customise;
+            get { return qtyOrdered; }
+            set { qtyOrdered = value; }
+        }
 
+        public double SubTotal
+        {
+            get { return subTotal; }
+        }
+
+        public OrderedFoodItem(string itemName, string itemDesc, double itemPrice, string customise, int qtyOrdered)
+                              : base(itemName, itemDesc, itemPrice, customise)
+        {
+            QtyOrdered = qtyOrdered;
             CalculateSubtotal();
         }
 
         public double CalculateSubtotal()
         {
-            SubTotal = ItemPrice * QtyOrdered;
-            return SubTotal;
+            subTotal = ItemPrice * QtyOrdered;
+            return subTotal;
         }
 
         public override string ToString()
         {
-            string customiseText = string.IsNullOrWhiteSpace(Customise) ? "" : $" (Custom: {Customise})";
-            return $"{ItemName} x{QtyOrdered} @ ${ItemPrice:0.00} = ${SubTotal:0.00}{customiseText}";
+            string output = ItemName + " x" + QtyOrdered +
+                            " - SGD " + subTotal.ToString("F2");
+
+            if (Customise != "")
+            {
+                output = output + " (Customise: " + Customise + ")";
+            }
+
+            return output;
         }
     }
 }
